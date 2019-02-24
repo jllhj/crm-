@@ -1,0 +1,7 @@
+ .filter a {
+            text-decoration: none;
+            color: #5e5e5e;
+        }
+        .active {
+            color: #2b669a!important;
+        }

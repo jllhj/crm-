@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block con %}
+    <h3>查看列表</h3>
+{% csrf_token %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <a href="{{ add_url }}" class="btn btn-primary">添加数据</a>
+            {#  如果你配置了搜索框就有显示 没有不显示 #}
+            {% if showlist.config.search_fields %}
+                <form action=""  class="pull-right">
+
+                    <input type="text" name="q" value="{{ showlist.config.key_word }}"><button>提交</button>
+                </form>
+            {% endif %}
+
+
+
+            <form action="" method="post">
+                {% csrf_token %}
+                <select name="action" id="" style="width: 200px;padding: 5px 8px;display: inline-block;margin: 5px 0px" >
+                    <option value="">-------------------------</option>
+                    {% for item in showlist.get_action_list %}
+                        <option value="{{ item.name }}">{{ item.desc }}</option>
+                    {% endfor %}
+
+                </select><button type="submit" class="btn btn-default" style="margin-left: 5px;margin-top: -4px">Go</button>
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    {% for item in showlist.get_header %}
+                        <th>{{ item }}</th>
+                    {% endfor %}
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in showlist.get_body %}
+                    <tr>
+                        {% for item in data %}
+                            <td>{{ item }}</td>
+                        {% endfor %}
+
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pagination">
+                    {{ showlist.page.page_html|safe }}
+                </ul>
+            </nav>
+                 </form>
+        </div>
+        <div class="col-md-3">
+            {% if showlist.config.list_filter %}
+                 <div class="filter">
+                <h4 class="">Filter</h4>
+                {% for filter_field,link_tags in showlist.get_filter_linktags.items %}
+                    <div class="well">
+                        <p>{{ filter_field.upper }}</p>
+                        {% for tag in link_tags %}
+                            <p>{{ tag|safe }}</p>
+                        {% endfor %}
+
+                    </div>
+                {% endfor %}
+
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#choice').click(function () {
+        if ($(this).prop('checked')) {
+            $('.item').prop('checked', true)
+        }
+        else {
+            $('.item').prop('checked', false)
+        }
+    })
+
+    $('.del').click(function () {
+        var $id=$(this).attr("id");
+        swal({
+                title: "Are you sure?",
+                text: "Your will not be able to recover this imaginary file!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            },
+            function () {
+                // 向后端发送请求
+                $.ajax({
+                    url : '{{ del_url }}',
+                    type : 'post',
+                    data : {
+                        csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                        id:$id
+                    },
+                    success:function (data) {
+                        swal("data!", "Your imaginary file has been deleted.", "success");
+                        location.href=''
+                    }
+
+                });
+
+            });
+    })
+
+</script>
+{% endblock %}

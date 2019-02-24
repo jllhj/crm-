@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block con %}
+<h3>编辑数据</h3>
+{% include 'form.html' %}
+
+<script>
+    // +号保存以后数据直接显示在框里面
+    function pop_response(pk,text,id) {
+        var $option = $('<option>'); // 生成一个option标签
+        $option.html(text); //<option>南京出版社</option>
+        $option.val(pk);    //<option value='sadsadsa'>南京出版社</option>
+        $option.attr('selected','selected');
+        $('#'+id).append($option)
+    }
+</script>
+{% endblock %}
